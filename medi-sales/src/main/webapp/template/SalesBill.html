@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Receipt</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: #006b5d;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            border-bottom: 4px solid #0056b3;
+        }
+
+        .container {
+            position: relative;
+            max-width: 700px;
+            margin: 20px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* Watermark Background */
+        .watermark {
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 50px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.1);
+            white-space: nowra
+            p;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .invoice-header, .invoice-title, .date, .table-container, .footer, .total, .download-btn {
+            position: relative;
+            z-index: 1;
+        }
+
+        .invoice-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .invoice-header h3 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .invoice-header p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .invoice-title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #006b5d;
+        }
+
+        .table-container {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 2px solid #ccc;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            color: #d9534f;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            margin: 25px auto;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="header">Indian Pharmacy</div>
+
+<div class="container">
+
+    <div class="watermark"><span th:text="${user.companyName}"></span></div>
+
+    <div class="invoice-header">
+        <h3>Invoice Receipt Holder</h3>
+        <p><span th:text="${user.personContact}"></span></p>
+        <p><span th:text="${user.address1}"></span></p>
+        <p>Ph: <span th:text="${user.registeredMobile}"></span> | Email: <span th:text="${user.registeredEmail }"></span></p>
+        <p>GSTIN: 24AKPP1343N1ZR</p>
+    </div>
+
+    <div class="invoice-title">Receipt</div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>HSN Code</th>
+                <th>Description</th>
+                <th>Pack</th>
+                <th>Batch No.</th>
+                <th>Exp. Date</th>
+                <th>Qty</th>
+                <th>MRP</th>
+                <th>Rate</th>
+                <th>GST%</th>
+                <th>Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, index : ${invoiceItems}">
+                <td th:text="${index.index + 1}"></td>
+                <td th:text="${item.hsn}"></td>
+                <td th:text="${item.productName}"></td>
+                <td th:text="${item.pack}"></td>
+                <td th:text="${item.batchNumber}"></td>
+                <td th:text="${item.expDate}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.mrp}"></td>
+                <td th:text="${item.rate}"></td>
+                <td th:text="${item.gst}"></td>
+                <td th:text="${item.totalAmount}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="total">Total Amount: ₹<span th:text="${final}"></span></div>
+
+    <div class="footer">
+        <p>Bank Details: State Bank of India | A/C No: 30860782555 | IFSC: SBIN22ED1</p>
+        <p>Advance Payment before Delivery.</p>
+    </div>
+
+    <button class="download-btn" onclick="generatePdf()">Download Receipt</button>
+</div>
+
+</body>
+</html>
